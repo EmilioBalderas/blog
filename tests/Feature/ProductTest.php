@@ -56,17 +56,7 @@ class ProductTest extends TestCase
     public function test_client_can_see_list_of_products() //index - list
     {
         // Given
-        $product = factory(Product::class)->create([
-            'id' => 1,
-            'name' => 'Super Product',
-            'price' => '23.30',
-        ]);
-
-        $product = factory(Product::class)->create([
-            'id' => 2,
-            'name' => 'Other Super Product',
-            'price' => '10.30',
-        ]);
+        $product = factory(Product::class, 2)->create();
 
         // When
         $response = $this->json('GET', '/api/products'); 
@@ -77,25 +67,20 @@ class ProductTest extends TestCase
         
         // Assert the list elements are returned
         $response->assertJsonFragment([
-            'name' => 'Super Product',
-            'price' => '23.30', 
-
-            'name' => 'Other Super Product',
-            'price' => '10.30'
+            'name' => $product[0]->name,
+            'price' => strval($product[0]->price), 
+            'name' => $product[1]->name,
+            'price' => strval($product[1]->price)
         ]);        
     }
 
     public function test_client_show_product() //show 
     {
         // Given
-        $product = factory(Product::class)->create([
-            'id' => 1,
-            'name' => 'Super Product',
-            'price' => '23.30',
-        ]);
+        $product = factory(Product::class)->create();
 
         // When
-        $response = $this->json('GET', '/api/products/1' ); 
+        $response = $this->json('GET', '/api/products/'.$product->id ); 
 
         // Then
         // Assert it sends the correct HTTP Status
@@ -103,19 +88,15 @@ class ProductTest extends TestCase
         
         // Assert the element is returned
         $response->assertJsonFragment([
-            'name' => 'Super Product',
-            'price' => '23.30', 
+            'name' => $product->name,
+            'price' => strval($product->price)
         ]);        
     }
 
     public function test_client_update_product() //update
     {
         // Given
-        $product = factory(Product::class)->create([
-            'id' => 1,
-            'name' => 'Super product',
-            'price' => '23.30',
-        ]);
+        $product = factory(Product::class)->create();
 
         $updatedData = [
             'name' => 'Super Product updated',
@@ -123,7 +104,7 @@ class ProductTest extends TestCase
         ];
 
         // When
-        $response = $this->json('PUT', '/api/products/1',  $updatedData); 
+        $response = $this->json('PUT', '/api/products/' . $product->id,  $updatedData); 
 
         // Then
         // Assert it sends the correct HTTP Status
@@ -131,22 +112,18 @@ class ProductTest extends TestCase
         
         // Assert the element is updated and returned
         $response->assertJsonFragment([
-            'name' => 'Super Product updated',
-            'price' => '23.30', 
+            'name' => $updatedData['name'],
+            'price' => strval($updatedData['price'])
         ]);        
     }
 
     public function test_client_delete_product() //delete
     {
         // Given
-        $product = factory(Product::class)->create([
-            'id' => 1,
-            'name' => 'Super product',
-            'price' => '23.30',
-        ]);
+        $product = factory(Product::class)->create();
 
         // When
-        $response = $this->json('DELETE', '/api/products/1'); 
+        $response = $this->json('DELETE', '/api/products/' . $product->id); 
 
         // Then
         // Assert it sends the correct HTTP Status

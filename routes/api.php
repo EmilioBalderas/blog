@@ -19,5 +19,17 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 Route::get('/greeting', function (Request $request){
-    return 'hola';
+    return 'hola mundo';
 });
+
+Route::post('products', "ProductController@store");
+
+Route::get('products', "ProductController@index");
+
+Route::get('products/{id}', "ProductController@show");
+
+Route::put('products/{id}', "ProductController@update");
+
+Route::delete('products/{id}', "ProductController@destroy");
+
+

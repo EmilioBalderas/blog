@@ -39,6 +39,12 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+
+        if(! $request->has("name"))
+        {
+            return response()->json('not name',422);
+        }
+
         // Create a new product
         $product = Product::create($request->all());
    

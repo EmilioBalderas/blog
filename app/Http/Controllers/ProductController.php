@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProduct;
+use App\Http\Requests\UpdateProduct;
 use App\Product;
 use Illuminate\Http\Request;
 
@@ -59,7 +60,10 @@ class ProductController extends Controller
         $product = Product::find($id);
 
         if($product) return response()->json($product,200);
-        else return response()->json("element not found",404);
+        else {
+            $msg = array("errors" => [array("code" => "Error-2", "title" => "Not Found")]);
+            return response()->json($msg,404);
+        }
     }
 
     /**
@@ -80,9 +84,15 @@ class ProductController extends Controller
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
+    public function update(UpdateProduct $request, $id)
+    {        
         $product = Product::find($id);
+
+        if(!$product) {
+            $msg = array("errors" => [array("code" => "Error-2", "title" => "Not Found")]);
+            return response()->json($msg, 404);
+        }
+
         $product->update($request->all());
         return response()->json($product, 200);
     }
@@ -96,6 +106,12 @@ class ProductController extends Controller
     public function destroy($id)
     {
         $product = Product::find($id);
+
+        if(!$product) {
+            $msg = array("errors" => [array("code" => "Error-2", "title" => "Not Found")]);
+            return response()->json($msg, 404);
+        }
+        
         $product->delete();
 
         return response()->json($product, 204);
